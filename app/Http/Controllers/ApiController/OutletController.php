@@ -82,4 +82,9 @@ class OutletController extends Controller
     {
         //
     }
+
+    public function maps()
+    {
+        //
+    }
 }

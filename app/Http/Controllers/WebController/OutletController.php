@@ -14,7 +14,7 @@ class OutletController extends Controller
      */
     public function index()
     {
-        //
+        return 'outlets';
     }
 
     /**
@@ -81,5 +81,9 @@ class OutletController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function maps(){
+        return 'maps';
     }
 }

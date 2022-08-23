@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\WebController\OutletController;
+use App\Http\Controllers\WebController\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,8 +19,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
-
 require __DIR__.'/auth.php';
+
+Route::group(['middleware' => ['web', 'auth']], function(){
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::get('/outlets/maps', [OutletController::class, 'maps'])->name('outlets.maps');
+
+    Route::resources([
+        'users' => UserController::class,
+        'outlets' => OutletController::class,
+    ]);
+});
