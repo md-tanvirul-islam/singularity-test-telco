@@ -3,11 +3,24 @@
 namespace App\Http\Controllers\WebController;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\WebRequest\UserCreateRequest;
+use App\Http\Requests\WebRequest\UserEditRequest;
 use App\Models\User;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(User::class, 'user');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,9 +48,20 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserCreateRequest $request)
     {
-        //
+        $data = $request->except(['password', 'password_confirmation']);
+        $data['password'] = Hash::make($request->password);
+        DB::beginTransaction();
+        try {
+            User::create($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'User has been created successfully.');
+        } catch (Exception | QueryException $e) {
+            DB::rollback();
+            Log::error("$e");
+            return abort(500);
+        }
     }
 
     /**
@@ -69,9 +93,22 @@ class UserController extends Controller
      * @param  int  User $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UserEditRequest $request, User $user)
     {
-        //
+        $data = $request->except(['password', 'password_confirmation']);
+        if($request->password){
+            $data['password'] = Hash::make($request->password);
+        }
+        DB::beginTransaction();
+        try {
+            $user->update($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'User has been updated successfully.');
+        } catch (Exception | QueryException $e) {
+            DB::rollback();
+            Log::error("$e");
+            return abort(500);
+        }
     }
 
     /**
@@ -82,6 +119,15 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $user->delete();
+            DB::commit();
+            return redirect()->back()->with('success', 'User has been deleted successfully.');
+        } catch (Exception | QueryException $e) {
+            DB::rollback();
+            Log::error("$e");
+            return abort(500);
+        }
     }
 }
