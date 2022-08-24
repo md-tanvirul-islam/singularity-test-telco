@@ -12,18 +12,16 @@
         </div>
     </x-slot>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-body panel-danger">
-                        @include('layouts.errors')
-                        <h4>User Create Form </h4>
-                        <form action="{{ route('users.store') }}" method="POST">
-                            @csrf
-                            @include('users.form')
-                        </form>
-                    </div>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    @include('layouts.message')
+                    <h4>User Create Form </h4>
+                    <form action="{{ route('users.store') }}" method="POST">
+                        @csrf
+                        @include('users.form')
+                    </form>
                 </div>
             </div>
         </div>
