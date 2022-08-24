@@ -3,18 +3,26 @@
 namespace App\Http\Controllers\WebController;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\WebRequest\OutletCreateRequest;
+use App\Http\Requests\WebRequest\OutletEditRequest;
+use App\Models\Outlet;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OutletController extends Controller
 {
-    /**
+/**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return 'outlets';
+        $outlets = Outlet::paginate(10);
+        return view('outlets.index', compact('outlets'));
     }
 
     /**
@@ -24,7 +32,7 @@ class OutletController extends Controller
      */
     public function create()
     {
-        //
+        return view('outlets.create');
     }
 
     /**
@@ -33,54 +41,89 @@ class OutletController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(OutletCreateRequest $request)
     {
-        //
+        $data = $request->except(['password', 'password_confirmation']);
+        if($request->password){
+            $data['password'] = Hash::make($request->password);
+        }
+        DB::beginTransaction();
+        try {
+            Outlet::create($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Outlet has been created successfully.');
+        } catch (Exception | QueryException $e) {
+            DB::rollback();
+            Log::error("$e");
+            return abort(500);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int  Outlet $outlet
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Outlet $outlet)
     {
-        //
+        return view('outlets.show', compact('user'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int  Outlet $outlet
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Outlet $outlet)
     {
-        //
+        return view('outlets.edit', compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int  Outlet $outlet
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(OutletEditRequest $request, Outlet $outlet)
     {
-        //
+        $data = $request->except(['password', 'password_confirmation']);
+        if($request->password){
+            $data['password'] = Hash::make($request->password);
+        }
+        DB::beginTransaction();
+        try {
+            $outlet->update($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Outlet has been updated successfully.');
+        } catch (Exception | QueryException $e) {
+            DB::rollback();
+            Log::error("$e");
+            return abort(500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int  Outlet $outlet
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Outlet $outlet)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $outlet->delete();
+            DB::commit();
+            return redirect()->back()->with('success', 'Outlet has been deleted successfully.');
+        } catch (Exception | QueryException $e) {
+            DB::rollback();
+            Log::error("$e");
+            return abort(500);
+        }
     }
 
     public function maps(){
