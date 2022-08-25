@@ -3,10 +3,20 @@
 namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ApiRequest\OutletCreateRequest;
+use App\Http\Requests\ApiRequest\OutletEditRequest;
+use App\Models\Outlet;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class OutletController extends Controller
 {
+    const IMAGE_LOCATION = "outlets/image/";
+
     /**
      * Display a listing of the resource.
      *
@@ -14,17 +24,7 @@ class OutletController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return successResponse(200, Outlet::all(), 'Outlet List');
     }
 
     /**
@@ -33,58 +33,90 @@ class OutletController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(OutletCreateRequest $request)
     {
-        //
+        $data = $request->except(['image']);
+        if($request->image){
+            $data['image'] = uploadFile($request->image, self::IMAGE_LOCATION);
+        }
+        DB::beginTransaction();
+        try {
+            $outlet = Outlet::create($data);
+            DB::commit();
+            return successResponse(201, $outlet, 'Outlet has been created successfully.');
+        } catch (Exception | QueryException $e) {
+            DB::rollback();
+            if(Storage::disk('public')->exists($data['image'])){
+                deleteFile($data['image']);
+            }
+            Log::error("$e");
+            return errorResponse(500, null, 'System Error.');
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int  Outlet $outlet
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Outlet $outlet)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return successResponse(200, $outlet,'Outlet details');
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int  Outlet $outlet
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(OutletEditRequest $request, Outlet $outlet)
     {
-        //
+        $data = $request->except(['image']);
+        if($request->image){
+            $data['image'] = uploadFile($request->image, self::IMAGE_LOCATION);
+            deleteFile($outlet->image);
+        }
+        DB::beginTransaction();
+        try {
+            $outlet->update($data);
+            DB::commit();
+            return successResponse(200, $outlet, 'Outlet has been updated successfully.');
+        } catch (Exception | QueryException $e) {
+            DB::rollback();
+            if(Storage::disk('public')->exists($data['image'])){
+                deleteFile($data['image']);
+            }
+            Log::error("$e");
+            return errorResponse(500, null, 'System Error.');
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int  Outlet $outlet
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Outlet $outlet)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $outlet->delete();
+            DB::commit();
+            return successResponse(200, null, 'Outlet has been deleted successfully.');
+        } catch (Exception | QueryException $e) {
+            DB::rollback();
+            Log::error("$e");
+            return errorResponse(500, null, 'System Error.');
+        }
     }
 
     public function maps()
     {
-        //
+        $coordinates = Outlet::get(['latitude', 'longitude'])->toArray();
+        return successResponse(200, $coordinates, 'Outlet coordinates');
     }
 }
