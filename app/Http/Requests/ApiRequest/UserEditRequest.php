@@ -25,9 +25,10 @@ class UserEditRequest extends FormRequest
      */
     public function rules()
     {
+        $user = $this->route('user');
         return [
             'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|unique:users,email,'.$user->id,
             'role' => 'required|in:admin,customer',
             'password' => 'required|confirmed'
         ];
