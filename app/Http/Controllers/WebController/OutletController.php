@@ -11,6 +11,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class OutletController extends Controller
 {
@@ -43,9 +44,9 @@ class OutletController extends Controller
      */
     public function store(OutletCreateRequest $request)
     {
-        $data = $request->except(['password', 'password_confirmation']);
-        if($request->password){
-            $data['password'] = Hash::make($request->password);
+        $data = $request->except(['image']);
+        if($request->image){
+            $data['image'] = uploadFile($request->image, 'outlets/image');
         }
         DB::beginTransaction();
         try {
@@ -54,6 +55,9 @@ class OutletController extends Controller
             return redirect()->back()->with('success', 'Outlet has been created successfully.');
         } catch (Exception | QueryException $e) {
             DB::rollback();
+            if(Storage::disk('public')->exists($data['image'])){
+                deleteFile($data['image']);
+            }
             Log::error("$e");
             return abort(500);
         }
@@ -127,6 +131,7 @@ class OutletController extends Controller
     }
 
     public function maps(){
-        return 'maps';
+        $coordinates = Outlet::get(['latitude', 'longitude'])->toArray();
+        return view('outlets.maps', compact('coordinates'));
     }
 }
