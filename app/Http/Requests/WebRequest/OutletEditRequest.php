@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\WebRequest;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class OutletEditRequest extends FormRequest
@@ -13,7 +14,7 @@ class OutletEditRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,11 @@ class OutletEditRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name'      => ['required', 'string', Rule::unique('outlets')->ignore($this->outlet->id)],
+            'phone'     => 'required|string',
+            'latitude'  => ['required', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
+            'longitude' => ['required', 'regex:/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/'],
+            'image'     => 'nullable|file|mimes:png,jpg|max:2048'
         ];
     }
 }

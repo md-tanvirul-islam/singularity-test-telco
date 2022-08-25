@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 
 class OutletController extends Controller
 {
+    const IMAGE_LOCATION = "outlets/image/";
 /**
      * Display a listing of the resource.
      *
@@ -46,7 +47,7 @@ class OutletController extends Controller
     {
         $data = $request->except(['image']);
         if($request->image){
-            $data['image'] = uploadFile($request->image, 'outlets/image');
+            $data['image'] = uploadFile($request->image, self::IMAGE_LOCATION);
         }
         DB::beginTransaction();
         try {
@@ -71,7 +72,7 @@ class OutletController extends Controller
      */
     public function show(Outlet $outlet)
     {
-        return view('outlets.show', compact('user'));
+        return view('outlets.show', compact('outlet'));
     }
 
     /**
@@ -82,7 +83,7 @@ class OutletController extends Controller
      */
     public function edit(Outlet $outlet)
     {
-        return view('outlets.edit', compact('user'));
+        return view('outlets.edit', compact('outlet'));
     }
 
     /**
@@ -94,9 +95,10 @@ class OutletController extends Controller
      */
     public function update(OutletEditRequest $request, Outlet $outlet)
     {
-        $data = $request->except(['password', 'password_confirmation']);
-        if($request->password){
-            $data['password'] = Hash::make($request->password);
+        $data = $request->except(['image']);
+        if($request->image){
+            $data['image'] = uploadFile($request->image, self::IMAGE_LOCATION);
+            deleteFile($outlet->image);
         }
         DB::beginTransaction();
         try {
@@ -105,6 +107,9 @@ class OutletController extends Controller
             return redirect()->back()->with('success', 'Outlet has been updated successfully.');
         } catch (Exception | QueryException $e) {
             DB::rollback();
+            if(Storage::disk('public')->exists($data['image'])){
+                deleteFile($data['image']);
+            }
             Log::error("$e");
             return abort(500);
         }

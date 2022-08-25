@@ -13,5 +13,8 @@ function uploadFile($file, $path){
 }
 
 function deleteFile($path){
+    if(preg_match('|^storage/.*$|', $path)){
+        $path = substr($path, 8);
+    }
     Storage::disk('public')->delete($path);
 }

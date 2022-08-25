@@ -17,11 +17,21 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <h3><strong>Outlet Name - </strong>{{ $outlet->name }}</h3>
-                        <h3><strong>User Email - </strong>{{ $outlet->email }}</h3>
-                        <p><strong>Created At - </strong>{!! $outlet->created_at  !!}   <mark>{{ $outlet->created_at->diffForHumans() }}</mark></p>
-                        @if(!is_null($outlet->updated_at))
-                            <p><strong>Updated At - </strong>{{ $outlet->updated_at }}  <mark>{{ $outlet->updated_at->diffForHumans() }}</mark></p>
-                        @endif
+                    <h3><strong>Phone - </strong>{{ $outlet->phone }}</h3>
+                    <h3><strong>Latitude - </strong>{{ $outlet->latitude }}</h3>
+                    <h3><strong>Longitude - </strong>{{ $outlet->longitude }}</h3>
+                    <p><strong>Created At - </strong>{!! $outlet->created_at  !!}   <mark>{{ $outlet->created_at->diffForHumans() }}</mark></p>
+                    @if(!is_null($outlet->updated_at))
+                        <p><strong>Updated At - </strong>{{ $outlet->updated_at }}  <mark>{{ $outlet->updated_at->diffForHumans() }}</mark></p>
+                    @endif
+                    <p>
+                        <strong>Image</strong>
+                        <img src="{{ asset($outlet->image) }}" alt="Outlet Image" style="height: 200px">
+                    </p>
+                    <p>
+                        <strong>Location - </strong>
+                        <iframe width="100%" height="500" src="https://maps.google.com/maps?q={{ $outlet->latitude }},{{ $outlet->longitude }}&output=embed" frameborder="0"></iframe>
+                    </p>
                 </div>
             </div>
         </div>
