@@ -16,7 +16,13 @@ use Illuminate\Support\Facades\Storage;
 class OutletController extends Controller
 {
     const IMAGE_LOCATION = "outlets/image/";
-/**
+
+    public function __construct()
+    {
+        $this->authorizeResource(Outlet::class, 'outlet');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
