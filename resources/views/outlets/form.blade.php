@@ -1,6 +1,6 @@
 <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
     <label for="name">Name</label>
-    <input type="text" name="name" id="name" value="{{ isset($user) ? $user->name : null}}" class="form-control" required>
+    <input type="text" name="name" id="name" value="{{ old('name') ? old('name') : (isset($outlet) ? $outlet->name : null)}}" class="form-control" required>
     @if ($errors->has('name'))
         <span class="help-block">
             <strong>{{ $errors->first('name') }}</strong>
@@ -8,52 +8,42 @@
     @endif
 </div>
 
-<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-    <label for="email">Email</label>
-    <input type="email" name="email" id="email" value="{{ isset($user) ? $user->email : null}}" class="form-control" required>
-    @if ($errors->has('email'))
+<div class="form-group{{ $errors->has('phone') ? ' has-error' : '' }}">
+    <label for="phone">Phone</label>
+    <input type="tel" name="phone" id="phone" value="{{ old('phone') ? old('phone') : (isset($outlet) ? $outlet->phone : null)}}" class="form-control" required>
+    @if ($errors->has('phone'))
         <span class="help-block">
-            <strong>{{ $errors->first('email') }}</strong>
+            <strong>{{ $errors->first('phone') }}</strong>
         </span>
     @endif
 </div>
 
-<div class="form-group {{ $errors->has('role') ? ' has-error' : '' }}">
-    <label for="role">Role</label>
-    <select name="role" id="role" class="form-control" required>
-        <option value="">Select One</option>
-        <option {{isset($user) ? ($user->role == 'admin' ? 'selected' : '') : null}} value="admin">Admin</option>
-        <option {{isset($user) ? ($user->role == 'customer' ? 'selected' : '') : null}} value="customer">Customer</option>
-    </select>
-    @if ($errors->has('role'))
+<div class="form-group{{ $errors->has('latitude') ? ' has-error' : '' }}">
+    <label for="latitude">Latitude</label>
+    <input type="text" name="latitude" id="latitude" value="{{ old('latitude') ? old('latitude') : (isset($outlet) ? $outlet->latitude : null)}}" class="form-control" required>
+    @if ($errors->has('latitude'))
         <span class="help-block">
-            <strong>{{ $errors->first('role') }}</strong>
+            <strong>{{ $errors->first('latitude') }}</strong>
         </span>
     @endif
 </div>
 
-<div class="form-group {{ $errors->has('password') ? ' has-error' : '' }}">
-    <label for="password">Password</label>
-    @if (Route::currentRouteName() == 'users.edit')
-        <small>(If you want to change the password, enter new password.)</small>
-    @endif
-    <input type="password" name="password" id="password" class="form-control" {{ Route::currentRouteName() == 'users.create' ? 'required' : ''}}>
-    @if ($errors->has('password'))
+<div class="form-group{{ $errors->has('longitude') ? ' has-error' : '' }}">
+    <label for="longitude">Longitude</label>
+    <input type="text" name="longitude" id="longitude" value="{{ old('longitude') ? old('longitude') : (isset($outlet) ? $outlet->longitude : null)}}" class="form-control" required>
+    @if ($errors->has('longitude'))
         <span class="help-block">
-            <strong>{{ $errors->first('password') }}</strong>
+            <strong>{{ $errors->first('longitude') }}</strong>
         </span>
     @endif
 </div>
 
-<div class="form-group {{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-    <label for="password_confirmation">Password(confirmation)</label>
-    @if (Route::currentRouteName() == 'users.edit')
-        <small>(If you want to change the password, enter new password.)</small>
-    @endif
-    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" {{ Route::currentRouteName() == 'users.create' ? 'required' : ''}}>
-    @if ($errors->has('password_confirmation'))
+<div class="form-group{{ $errors->has('image') ? ' has-error' : '' }}">
+    <label for="image">Image</label>
+    <input type="file" name="image" id="image" class="form-control" accept=".png, .jpg, .jpeg">
+    @if ($errors->has('image'))
         <span class="help-block">
-            <strong>{{ $errors->first('password_confirmation') }}</strong>
+            <strong>{{ $errors->first('image') }}</strong>
         </span>
     @endif
 </div>

@@ -18,7 +18,7 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     @include('layouts.message')
                     <h4>Outlet Create Form </h4>
-                    <form action="{{ route('outlets.store') }}" method="POST">
+                    <form action="{{ route('outlets.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @include('outlets.form')
                     </form>

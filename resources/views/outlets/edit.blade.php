@@ -18,7 +18,7 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     @include('layouts.message')
                     <h4>Outlet Edit Form </h4>
-                    <form action="{{ route('outlets.update',$user->id) }}" method="POST">
+                    <form action="{{ route('outlets.update',$outlet->id) }}" method="POST" enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
                         @include('outlets.form')

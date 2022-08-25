@@ -22,24 +22,26 @@
                           <tr>
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Role</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col">Latitude</th>
+                            <th scope="col">Longitude</th>
                             <th scope="col">Created At</th>
                             <th scope="col">Action</th>
                           </tr>
                         </thead>
                         <tbody>
-                            @foreach ($outlets as $index => $user)
+                            @foreach ($outlets as $index => $outlet)
                                 <tr>
                                     <th scope="row">{{ $outlets->firstItem() +$index }}</th>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ Str::ucfirst($user->role) }}</td>
-                                    <td>{{ $user->created_at->diffForHumans()}}</td>
+                                    <td>{{ $outlet->name }}</td>
+                                    <td>{{ $outlet->phone }}</td>
+                                    <td>{{ $outlet->latitude }}</td>
+                                    <td>{{ $outlet->longitude }}</td>
+                                    <td>{{ $outlet->created_at->diffForHumans()}}</td>
                                     <td>
-                                        <a class="btn btn-warning btn-sm" href="{{ route('outlets.edit', $user->id) }}"> <i class="fa fa-pencil"></i> </a>
-                                        <a class="btn btn-success btn-sm" href="{{ route('outlets.show', $user->id) }}"> <i class="fa fa-eye"></i> </a>
-                                        <form action="{{ route('outlets.destroy', $user->id) }}" method="post">
+                                        <a class="btn btn-warning btn-sm" href="{{ route('outlets.edit', $outlet->id) }}"> <i class="fa fa-pencil"></i> </a>
+                                        <a class="btn btn-success btn-sm" href="{{ route('outlets.show', $outlet->id) }}"> <i class="fa fa-eye"></i> </a>
+                                        <form action="{{ route('outlets.destroy', $outlet->id) }}" method="post">
                                             @method('DELETE')
                                             @csrf
                                             <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Confirm delete?')">

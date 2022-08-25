@@ -16,11 +16,11 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <h3><strong>Outlet Name - </strong>{{ $user->name }}</h3>
-                        <h3><strong>User Email - </strong>{{ $user->email }}</h3>
-                        <p><strong>Created At - </strong>{!! $user->created_at  !!}   <mark>{{ $user->created_at->diffForHumans() }}</mark></p>
-                        @if(!is_null($user->updated_at))
-                            <p><strong>Updated At - </strong>{{ $user->updated_at }}  <mark>{{ $user->updated_at->diffForHumans() }}</mark></p>
+                    <h3><strong>Outlet Name - </strong>{{ $outlet->name }}</h3>
+                        <h3><strong>User Email - </strong>{{ $outlet->email }}</h3>
+                        <p><strong>Created At - </strong>{!! $outlet->created_at  !!}   <mark>{{ $outlet->created_at->diffForHumans() }}</mark></p>
+                        @if(!is_null($outlet->updated_at))
+                            <p><strong>Updated At - </strong>{{ $outlet->updated_at }}  <mark>{{ $outlet->updated_at->diffForHumans() }}</mark></p>
                         @endif
                 </div>
             </div>
