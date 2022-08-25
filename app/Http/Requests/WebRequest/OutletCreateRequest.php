@@ -13,7 +13,7 @@ class OutletCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,11 @@ class OutletCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name'      => 'required|string|unique:outlets,name',
+            'phone'     => 'required|string',
+            'latitude'  => ['required', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
+            'longitude' => ['required', 'regex:/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/'],
+            'image'     => 'nullable|file|mimes:png,jpg|max:2048'
         ];
     }
 }
