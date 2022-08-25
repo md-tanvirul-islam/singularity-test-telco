@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiController\AuthController;
 use App\Http\Controllers\ApiController\OutletController;
 use App\Http\Controllers\ApiController\UserController;
 use Illuminate\Http\Request;
@@ -15,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('/auth/register', [AuthController::class, 'registerUser']);
+
+Route::post('/auth/login', [AuthController::class, 'login']);
+
+Route::post('/auth/logout', [AuthController::class, 'logout']);
 
 Route::group(['middleware' => 'auth:api','as' => 'api'], function(){
     Route::get('/user', function (Request $request) {
